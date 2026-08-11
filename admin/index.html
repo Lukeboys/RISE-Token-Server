@@ -1,0 +1,137 @@
+here<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>RISE Admin Panel</title>
+</head>
+<body>
+
+<h1>RISE Admin Panel</h1>
+
+<h2>Login</h2>
+
+<input id="username" placeholder="Username">
+<input id="password" type="password" placeholder="Password">
+
+<button onclick="login()">
+Login
+</button>
+
+<hr>
+
+<h2>Create Token</h2>
+
+<input id="owner" placeholder="Owner">
+
+<button onclick="createToken()">
+Create Token
+</button>
+
+<pre id="result"></pre>
+
+<hr>
+
+<h2>Token List</h2>
+
+<button onclick="loadTokens()">
+Refresh
+</button>
+
+<pre id="tokens"></pre>
+
+<script>
+
+const API = "";
+
+let logged = false;
+
+async function login(){
+
+    const username =
+        document.getElementById("username").value;
+
+    const password =
+        document.getElementById("password").value;
+
+    const res = await fetch(
+        "/admin/login",
+        {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                username,
+                password
+            })
+        }
+    );
+
+    const data = await res.json();
+
+    if(data.success){
+
+        logged = true;
+
+        alert("Login Berhasil");
+
+    }else{
+
+        alert("Login Gagal");
+
+    }
+
+}
+
+async function createToken(){
+
+    if(!logged){
+
+        alert("Login terlebih dahulu");
+
+        return;
+
+    }
+
+    const owner =
+        document.getElementById("owner").value;
+
+    const res = await fetch(
+        "/admin/create-token",
+        {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                owner
+            })
+        }
+    );
+
+    const data = await res.json();
+
+    document.getElementById("result")
+        .innerText =
+        JSON.stringify(data,null,2);
+
+}
+
+async function loadTokens(){
+
+    const res =
+        await fetch("/admin/tokens");
+
+    const data =
+        await res.json();
+
+    document.getElementById("tokens")
+        .innerText =
+        JSON.stringify(data,null,2);
+
+}
+
+</script>
+
+</body>
+</html>
