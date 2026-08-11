@@ -160,6 +160,15 @@ app.post("/verify", (req, res) => {
 
 });
 
-app.listen(3000, () => {
-    console.log("RISE Token Server Running");
+app.get("/health", (req, res) => {
+    res.json({
+        status: "online",
+        service: "RISE Token Server"
+    });
+});
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+    console.log(`RISE Token Server Running On Port ${PORT}`);
 });
